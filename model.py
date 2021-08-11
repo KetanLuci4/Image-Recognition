@@ -30,13 +30,13 @@ test_y = y[-val_size:]
 class Net(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = nn.Conv2d(1, 20, 5)        #-> Tsize 46
+        self.conv1 = nn.Conv2d(1, 10, 5)        #-> Tsize 46
         self.pool1 = nn.MaxPool2d(2,2)         #-> Tsize 23
-        self.conv2 = nn.Conv2d(20,50,5)        #-> Tsize 19
+        self.conv2 = nn.Conv2d(10,20,5)        #-> Tsize 19
         self.pool2 = nn.MaxPool2d(2,2)          #-> Tsize 8
-        self.conv3 = nn.Conv2d(50,80,5)
+        self.conv3 = nn.Conv2d(20,32,5)
         self.pool3 = nn.MaxPool2d(2,2)
-        self.fc1 = nn.Linear(80*8*8,2000)
+        self.fc1 = nn.Linear(32*8*8,2000)
         self.fc2 = nn.Linear(2000,1500)
         self.fc3 = nn.Linear(1500,1101)
 
@@ -44,7 +44,7 @@ class Net(nn.Module):
         x = self.pool1(F.relu(self.conv1(x)))
         x = self.pool2(F.relu(self.conv2(x)))
         x = self.pool3(F.relu(self.conv3(x)))
-        x = x.view(-1, 80*8*8)
+        x = x.view(-1, 32*8*8)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = nn.Softmax(self.fc3(x))
