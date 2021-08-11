@@ -9,7 +9,7 @@ import maincode
 training_data = np.load("training_data_4.npy", allow_pickle=True)
 np.random.shuffle(training_data)
 
-X = torch.Tensor([i[0] for i in training_data]).view(-1,200,200)
+X = torch.Tensor([i[0] for i in training_data]).view(-1,50,50)
 X = X/255.0
 y = torch.Tensor([i[1] for i in training_data])
 
@@ -30,21 +30,21 @@ test_y = y[-val_size:]
 class Net(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv1 = nn.Conv2d(1, 500, 5)        #-> Tsize 46
+        self.conv1 = nn.Conv2d(1, 20, 5)        #-> Tsize 46
         self.pool1 = nn.MaxPool2d(2,2)         #-> Tsize 23
-        self.conv2 = nn.Conv2d(500,1000,5)        #-> Tsize 19
+        self.conv2 = nn.Conv2d(20,50,5)        #-> Tsize 19
         self.pool2 = nn.MaxPool2d(2,2)          #-> Tsize 8
-        self.conv3 = nn.Conv2d(1000,3500,5)
+        self.conv3 = nn.Conv2d(50,80,5)
         self.pool3 = nn.MaxPool2d(2,2)
-        self.fc1 = nn.Linear(3100*8*8,100000)
-        self.fc2 = nn.Linear(50000,20000)
-        self.fc3 = nn.Linear(10000,1101)
+        self.fc1 = nn.Linear(80*8*8,2000)
+        self.fc2 = nn.Linear(2000,1500)
+        self.fc3 = nn.Linear(1500,1101)
 
     def forward(self,x):
         x = self.pool1(F.relu(self.conv1(x)))
         x = self.pool2(F.relu(self.conv2(x)))
         x = self.pool3(F.relu(self.conv3(x)))
-        x = x.view(-1, 3100*8*8)
+        x = x.view(-1, 80*8*8)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = nn.Softmax(self.fc3(x))
@@ -80,7 +80,7 @@ total = 0
 with torch.no_grad():
     for i in range(len(test_X)):
         real_class = torch.argmax(test_y[i])
-        net_out = net(test_X[i].view(-1, 1, 200, 200))[0]  # returns a list, 
+        net_out = net(test_X[i].view(-1, 1, 50, 50))[0]  # returns a list, 
         predicted_class = torch.argmax(net_out)
 
         if predicted_class == real_class:
