@@ -3,7 +3,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
-import tqdm as tqdm
 import maincode
 
 training_data = np.load("training_data_4.npy", allow_pickle=True)
